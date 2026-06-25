@@ -208,44 +208,44 @@ churnops/
 * [x] Extract churn_prediction = int(predict[0])
 * [x] Set prediction_label = "Will Churn" if churn_prediction == 1 else "Will Not Churn"
 * [x] Return {"churn_prediction": churn_prediction, "churn_probability": churn_probability, "prediction_label": prediction_label}
-* [ ] Create api/services/prediction_logger.py
-* [ ] Import FEATURE_ORDER from core.features
-* [ ] Implement initialize_log_db(db_path: str) that connects to the SQLite file at db_path and creates a predictions table if it does not already exist, with columns: id INTEGER PRIMARY KEY AUTOINCREMENT, timestamp TEXT, churn_prediction INTEGER, churn_probability REAL, and one REAL column per numeric feature and one TEXT column per categorical feature as defined by FEATURE_ORDER
-* [ ] Use sqlite3 from the standard library only — no SQLAlchemy needed for this append-only log
-* [ ] Implement log_prediction(db_path: str, customer: CustomerFeatures, result: dict) that inserts one row into the predictions table with the ISO-8601 timestamp, prediction, probability, and all 19 feature values
-* [ ] Wrap all database writes in a try/except; if the write fails, emit a logging.warning internally but do not raise — a logging failure must never cause the /predict endpoint to return a 5xx error to the client
-* [ ] Create api/routes/health.py
-* [ ] Define a FastAPI APIRouter
-* [ ] Implement GET /health that attempts to call model_loader.get_model() and model_loader.get_preprocessor() without raising, sets model_loaded and preprocessor_loaded booleans accordingly, and returns a HealthResponse with status="ok"
-* [ ] Create api/routes/predict.py
-* [ ] Define a FastAPI APIRouter
-* [ ] Implement POST /predict that accepts CustomerFeatures as the JSON request body (no query parameters)
-* [ ] Retrieve the model and preprocessor from model_loader.get_model() and model_loader.get_preprocessor() — these are already loaded at startup; there is no disk I/O per request
-* [ ] Call predictor.predict(customer, model, preprocessor) and capture the result dict
-* [ ] Call prediction_logger.log_prediction(settings.prediction_db_path, customer, result) to append to the log
-* [ ] Build and return a PredictionResponse from the result dict
-* [ ] Handle PreprocessingError with HTTP 422 and the exception's client_message; handle PredictionError with HTTP 500 and the exception's client_message — internal exception details must never appear in the response body
-* [ ] Create api/routes/metrics.py
-* [ ] Define a FastAPI APIRouter
-* [ ] Implement GET /metrics with an optional query parameter window: int = 500 that limits how many recent predictions to analyze
-* [ ] Call report.get_drift_report(settings.prediction_db_path, window) to get the structured drift report
-* [ ] If no predictions have been logged yet (total_predictions = 0), return MetricsResponse(total_predictions=0, window_size=window, drift_metrics=[]) without raising
-* [ ] Return a MetricsResponse built from the drift report dict
-* [ ] Handle DriftReportError with HTTP 500 and the exception's client_message
-* [ ] Create api/dependencies.py
-* [ ] Define a get_model FastAPI dependency that calls model_loader.get_model() — for use in routes that prefer Depends injection over direct calls
-* [ ] Define a get_preprocessor FastAPI dependency that calls model_loader.get_preprocessor()
-* [ ] Create api/main.py
-* [ ] Import asynccontextmanager from contextlib for the modern lifespan pattern (do not use the deprecated @app.on_event("startup") decorator)
-* [ ] Instantiate FastAPI(title="ChurnOps", description="Customer churn prediction API with drift monitoring", version="1.0.0", lifespan=lifespan)
-* [ ] Define a lifespan context manager that calls model_loader.initialize_artifacts(settings.model_path, settings.preprocessor_path) and prediction_logger.initialize_log_db(settings.prediction_db_path) on startup, validates that settings.reference_distributions_path exists on disk to fail fast if drift detection is misconfigured, and yields control to the application
-* [ ] Add CORSMiddleware with allow_origins=settings.cors_allowed_origins, allow_methods=["GET", "POST"] only — never use ["*"] for methods or origins in this application
-* [ ] Include routers from health, predict, and metrics with appropriate path prefixes
-* [ ] Add a global exception handler for ModelNotLoadedError that returns HTTP 503 with the exception's client_message
-* [ ] Add global exception handlers for PreprocessingError (422), PredictionError (500), and DriftReportError (500), each returning only the sanitized client-facing detail — stack trace and file paths must never appear in response bodies
-* [ ] Test the application locally with uvicorn api.main:app --reload
-* [ ] Visit /docs (Swagger UI) to verify all three endpoints appear with correct schema
-* [ ] Send a test POST /predict with a valid JSON payload via the Swagger UI or curl; confirm churn_prediction, churn_probability, and prediction_label are returned correctly
+* [x] Create api/services/prediction_logger.py
+* [x] Import FEATURE_ORDER from core.features
+* [x] Implement initialize_log_db(db_path: str) that connects to the SQLite file at db_path and creates a predictions table if it does not already exist, with columns: id INTEGER PRIMARY KEY AUTOINCREMENT, timestamp TEXT, churn_prediction INTEGER, churn_probability REAL, and one REAL column per numeric feature and one TEXT column per categorical feature as defined by FEATURE_ORDER
+* [x] Use sqlite3 from the standard library only — no SQLAlchemy needed for this append-only log
+* [x] Implement log_prediction(db_path: str, customer: CustomerFeatures, result: dict) that inserts one row into the predictions table with the ISO-8601 timestamp, prediction, probability, and all 19 feature values
+* [x] Wrap all database writes in a try/except; if the write fails, emit a logging.warning internally but do not raise — a logging failure must never cause the /predict endpoint to return a 5xx error to the client
+* [x] Create api/routes/health.py
+* [x] Define a FastAPI APIRouter
+* [x] Implement GET /health that attempts to call model_loader.get_model() and model_loader.get_preprocessor() without raising, sets model_loaded and preprocessor_loaded booleans accordingly, and returns a HealthResponse with status="ok"
+* [x] Create api/routes/predict.py
+* [x] Define a FastAPI APIRouter
+* [x] Implement POST /predict that accepts CustomerFeatures as the JSON request body (no query parameters)
+* [x] Retrieve the model and preprocessor from model_loader.get_model() and model_loader.get_preprocessor() — these are already loaded at startup; there is no disk I/O per request
+* [x] Call predictor.predict(customer, model, preprocessor) and capture the result dict
+* [x] Call prediction_logger.log_prediction(settings.prediction_db_path, customer, result) to append to the log
+* [x] Build and return a PredictionResponse from the result dict
+* [x] Handle PreprocessingError with HTTP 422 and the exception's client_message; handle PredictionError with HTTP 500 and the exception's client_message — internal exception details must never appear in the response body
+* [x] Create api/routes/metrics.py
+* [x] Define a FastAPI APIRouter
+* [x] Implement GET /metrics with an optional query parameter window: int = 500 that limits how many recent predictions to analyze
+* [x] Call report.get_drift_report(settings.prediction_db_path, window) to get the structured drift report
+* [x] If no predictions have been logged yet (total_predictions = 0), return MetricsResponse(total_predictions=0, window_size=window, drift_metrics=[]) without raising
+* [x] Return a MetricsResponse built from the drift report dict
+* [x] Handle DriftReportError with HTTP 500 and the exception's client_message
+* [x] Create api/dependencies.py
+* [x] Define a get_model FastAPI dependency that calls model_loader.get_model() — for use in routes that prefer Depends injection over direct calls
+* [x] Define a get_preprocessor FastAPI dependency that calls model_loader.get_preprocessor()
+* [x] Create api/main.py
+* [x] Import asynccontextmanager from contextlib for the modern lifespan pattern (do not use the deprecated @app.on_event("startup") decorator)
+* [x] Instantiate FastAPI(title="ChurnOps", description="Customer churn prediction API with drift monitoring", version="1.0.0", lifespan=lifespan)
+* [x] Define a lifespan context manager that calls model_loader.initialize_artifacts(settings.model_path, settings.preprocessor_path) and prediction_logger.initialize_log_db(settings.prediction_db_path) on startup, validates that settings.reference_distributions_path exists on disk to fail fast if drift detection is misconfigured, and yields control to the application
+* [x] Add CORSMiddleware with allow_origins=settings.cors_allowed_origins, allow_methods=["GET", "POST"] only — never use ["*"] for methods or origins in this application
+* [x] Include routers from health, predict, and metrics with appropriate path prefixes
+* [x] Add a global exception handler for ModelNotLoadedError that returns HTTP 503 with the exception's client_message
+* [x] Add global exception handlers for PreprocessingError (422), PredictionError (500), and DriftReportError (500), each returning only the sanitized client-facing detail — stack trace and file paths must never appear in response bodies
+* [x] Test the application locally with uvicorn api.main:app --reload
+* [x] Visit /docs (Swagger UI) to verify all three endpoints appear with correct schema
+* [x] Send a test POST /predict with a valid JSON payload via the Swagger UI or curl; confirm churn_prediction, churn_probability, and prediction_label are returned correctly
 * [ ] Create monitoring/drift_detector.py
 * [ ] Implement compute_psi(expected: np.ndarray, actual: np.ndarray, bins: int = 10) -> float that computes the Population Stability Index between a reference distribution and an observed distribution
 * [ ] In compute_psi, use np.histogram on expected to determine bin edges, then apply the same bin edges to actual; compute bin proportions for both; add a small epsilon (1e-4) to all proportions before computing sum((actual_pct - expected_pct) * np.log(actual_pct / expected_pct)); return the PSI as a float
@@ -253,8 +253,8 @@ churnops/
 * [ ] Implement load_reference_distributions(path: str) -> dict that reads the reference distributions JSON file and returns the dict of per-feature distribution data saved during training
 * [ ] Implement compute_drift_report(df: pd.DataFrame, reference_distributions: dict) -> list[dict] that iterates over each numeric feature, extracts the feature column from df, calls compute_psi against the saved training distribution, calls get_psi_status, and returns a list of {"feature": str, "psi": float, "status": str} dicts
 * [ ] Note in a code comment that PSI is only meaningful for numeric features in this implementation; categorical feature drift (via chi-squared or Jensen-Shannon divergence) is listed as an optional extension
-* [ ] Create monitoring/report.py
-* [ ] Import DriftReportError from api.core.errors
+* [x] Create monitoring/report.py
+* [x] Import DriftReportError from api.core.errors
 * [ ] Implement load_prediction_log(db_path: str, window: int) -> pd.DataFrame that opens the SQLite predictions log and reads the last window rows ordered by id DESC, then reverses to chronological order; return an empty DataFrame (not raise) if the table has no rows yet
 * [ ] Implement get_drift_report(db_path: str, window: int) -> dict that calls load_prediction_log, loads reference distributions, calls compute_drift_report if len(df) > 0, and returns {"total_predictions": int, "window_size": window, "drift_metrics": list} — wrap in try/except and raise DriftReportError only if the SQLite file is corrupt or unreadable (not if it is simply empty)
 * [ ] Create docker/Dockerfile

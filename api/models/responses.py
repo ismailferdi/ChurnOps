@@ -6,7 +6,7 @@ class PredictionResponse(BaseModel):
 
     churn_prediction: Literal[0, 1]
     churn_probability: float = Field(ge=0.0, le=1.0)
-    prediction_label: Literal["Will Churn", "Will Not Churn"]
+    prediction_label: Literal["Will Not Churn", "Will Churn"]
 
     @field_validator("churn_probability")
     @classmethod

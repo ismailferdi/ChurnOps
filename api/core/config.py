@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     prediction_db_path: str
     mlflow_tracking_uri: str
     cors_allowed_origins: list[str]
+    allowed_methods: list[str]
 
 
 settings = Settings()
