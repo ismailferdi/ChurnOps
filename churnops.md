@@ -246,17 +246,17 @@ churnops/
 * [x] Test the application locally with uvicorn api.main:app --reload
 * [x] Visit /docs (Swagger UI) to verify all three endpoints appear with correct schema
 * [x] Send a test POST /predict with a valid JSON payload via the Swagger UI or curl; confirm churn_prediction, churn_probability, and prediction_label are returned correctly
-* [ ] Create monitoring/drift_detector.py
-* [ ] Implement compute_psi(expected: np.ndarray, actual: np.ndarray, bins: int = 10) -> float that computes the Population Stability Index between a reference distribution and an observed distribution
-* [ ] In compute_psi, use np.histogram on expected to determine bin edges, then apply the same bin edges to actual; compute bin proportions for both; add a small epsilon (1e-4) to all proportions before computing sum((actual_pct - expected_pct) * np.log(actual_pct / expected_pct)); return the PSI as a float
-* [ ] Implement get_psi_status(psi: float) -> str that returns "OK" if psi < 0.1, "WARNING" if 0.1 <= psi < 0.2, and "ALERT" if psi >= 0.2
-* [ ] Implement load_reference_distributions(path: str) -> dict that reads the reference distributions JSON file and returns the dict of per-feature distribution data saved during training
-* [ ] Implement compute_drift_report(df: pd.DataFrame, reference_distributions: dict) -> list[dict] that iterates over each numeric feature, extracts the feature column from df, calls compute_psi against the saved training distribution, calls get_psi_status, and returns a list of {"feature": str, "psi": float, "status": str} dicts
-* [ ] Note in a code comment that PSI is only meaningful for numeric features in this implementation; categorical feature drift (via chi-squared or Jensen-Shannon divergence) is listed as an optional extension
+* [x] Create monitoring/drift_detector.py
+* [x] Implement compute_psi(expected: np.ndarray, actual: np.ndarray, bins: int = 10) -> float that computes the Population Stability Index between a reference distribution and an observed distribution
+* [x] In compute_psi, use np.histogram on expected to determine bin edges, then apply the same bin edges to actual; compute bin proportions for both; add a small epsilon (1e-4) to all proportions before computing sum((actual_pct - expected_pct) * np.log(actual_pct / expected_pct)); return the PSI as a float
+* [x] Implement get_psi_status(psi: float) -> str that returns "OK" if psi < 0.1, "WARNING" if 0.1 <= psi < 0.2, and "ALERT" if psi >= 0.2
+* [x] Implement load_reference_distributions(path: str) -> dict that reads the reference distributions JSON file and returns the dict of per-feature distribution data saved during training
+* [x] Implement compute_drift_report(df: pd.DataFrame, reference_distributions: dict) -> list[dict] that iterates over each numeric feature, extracts the feature column from df, calls compute_psi against the saved training distribution, calls get_psi_status, and returns a list of {"feature": str, "psi": float, "status": str} dicts
+* [x] Note in a code comment that PSI is only meaningful for numeric features in this implementation; categorical feature drift (via chi-squared or Jensen-Shannon divergence) is listed as an optional extension
 * [x] Create monitoring/report.py
 * [x] Import DriftReportError from api.core.errors
-* [ ] Implement load_prediction_log(db_path: str, window: int) -> pd.DataFrame that opens the SQLite predictions log and reads the last window rows ordered by id DESC, then reverses to chronological order; return an empty DataFrame (not raise) if the table has no rows yet
-* [ ] Implement get_drift_report(db_path: str, window: int) -> dict that calls load_prediction_log, loads reference distributions, calls compute_drift_report if len(df) > 0, and returns {"total_predictions": int, "window_size": window, "drift_metrics": list} — wrap in try/except and raise DriftReportError only if the SQLite file is corrupt or unreadable (not if it is simply empty)
+* [x] Implement load_prediction_log(db_path: str, window: int) -> pd.DataFrame that opens the SQLite predictions log and reads the last window rows ordered by id DESC, then reverses to chronological order; return an empty DataFrame (not raise) if the table has no rows yet
+* [x] Implement get_drift_report(db_path: str, window: int) -> dict that calls load_prediction_log, loads reference distributions, calls compute_drift_report if len(df) > 0, and returns {"total_predictions": int, "window_size": window, "drift_metrics": list} — wrap in try/except and raise DriftReportError only if the SQLite file is corrupt or unreadable (not if it is simply empty)
 * [ ] Create docker/Dockerfile
 * [ ] Use FROM python:3.11-slim as the base image
 * [ ] Set WORKDIR /app
